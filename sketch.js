@@ -2,16 +2,23 @@
 // CREATE GLOBAL VARIABLES
 // For Engine, World, Bodies and any other that you have in mind to make your coding life easier.
 // remember to create an array of boxes.
-
+var Engine = Matter.Engine,
+    World = Matter.World,
+    Bodies = Matter.Bodies;
  
+var engine;
+var world;
 var boxes = [];
-var gSlider;
  
+var ground;
+var gSlider;
  
 function setup() {
     createCanvas(400, 400);
 
     // Create an instance of Engine, World
+    engine = Engine.create();
+    world = engine.world;
  
     // A slider is already created for you here. This slider will dictate the gravity of the world
     gSlider = createSlider(0, 100, 50);
