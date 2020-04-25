@@ -1,71 +1,103 @@
 
-// CREATE GLOBAL VARIABLES
-// For Engine, World, Bodies and any other that you have in mind to make your coding life easier.
-// remember to create an array of boxes.
-var Engine = Matter.Engine,
-    World = Matter.World,
-    Bodies = Matter.Bodies;
+//GLOBAL VARIABLES
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
  
-var engine;
-var world;
-var boxes = [];
- 
-var ground;
-var gSlider;
+var engine, world;
+
+//an array of boxes, its width and height.
+var boxes = []; 
+var boxWidth = [];
+var boxHeight = [];
+
+var ground, gSlider;
+
+var i = 0, j = 0;
+var gra = 0;
  
 function setup() {
-    createCanvas(400, 400);
+	createCanvas(400, 400);
 
-    // Create an instance of Engine, World
-    engine = Engine.create();
-    world = engine.world;
- 
-    // A slider is already created for you here. This slider will dictate the gravity of the world
-    gSlider = createSlider(0, 100, 50);
-    gSlider.position(40, 365);
-    gSlider.input = map(engine.world.gravity, gSlider.min, gSlider.max, 0, 1);
- 
-    // Create a ground rectangle that would hold all the boxes and add it to the world.
+	// Create an instance of Engine, World
+	engine = Engine.create();
+	world = engine.world;
 
+	// A slider is already created for you here. This slider will dictate the gravity of the world
+	gSlider = createSlider(0, 100, 50);
+	gSlider.position(125, 375);
+	//gSlider.input =
+	
+
+	//A ground rectangle that would hold all the boxes
+	var ground_options = {
+		isStatic: true,
+	}
+
+	ground = Bodies.rectangle(200, 360, 400, 20, ground_options);
+	World.add(world, ground);
 }
- 
-function mousePressed() {
-    if (mouseY < 350) {
-        // Every time a mouse press occures create a new box.
-    }
+
+//overriding mousePressed function
+function mousePressed(){
+	if (mouseY < 350) {
+		//when mouse press occurs, create a new box.
+		randomBox(mouseX, mouseY,
+				round(random(10, 50)), round(random(10, 50)));
+	}
 }
  
 function draw() {
-    // Draw all the elements including the slider that 
+		background(150);
+		Engine.update(engine);
 
-    background(51);
-    // This is the value of your gravity. You can optionally show it to the viewer.
-    var fVal = gSlider.value();
- 
-    // Use a for loop to show all the boxes
+		// This is the value of your gravity. You can optionally show it to the viewer.
+		var fVal = gSlider.value();
+		gra = map(fVal, 0, 100, 0, 1);
+		engine.world.gravity.y = gra;
 
+		//draw a ground
+		rectMode(CENTER);
+		fill("green");
+		rect(ground.position.x, ground.position.y, 400, 20);
+
+		//for loop to show all the boxes
+		for( j = 0; j < i; j++){
+			show();
+		}
+
+		fill("black");
+		text(0, 110 , 390);
+		text(100, 260, 390);
+
+		text("GRAVITY "+fVal, 150, 50);
 }
- 
 
-// You can either create a file for the class Box or build a simple function that creates one box at a time.
-// I have gone for the second option.
-function Box(x, y, w, h, options) {
-
-    // add options such as friction and restitution. Experiment with the values
-    var options = {
-
+function randomBox(x, y, w, h) {
+    var boxes_options = {
+		restitution: 1.0,
+		friction: 0.5,
     }
  
     // create your box using the function arguments
-    // x - x-coordinate
-    // y - y-coordinate
-    // w - width of the box
-    // h - height of the box
+	boxes[i] = Bodies.rectangle(x, y, w, h, boxes_options);
+	boxWidth[i] = w;
+	boxHeight[i] = h;
 
- 
+	World.add(world, boxes[i]);
+	i = i + 1;		
+}
 
-    // Create a show method which will draw the box every time it is called inside the draw method.
-    // remember to push and pop.
-    this.show = function () {
-    }
+// A show method which will draw the boxes.
+function show() {
+	var pos= boxes[j].position;
+	var angle= boxes[j].angle;
+	
+	push();
+	translate(pos.x,pos.y);
+	rotate(angle);
+	fill(0);
+	rectMode(CENTER);
+	rect(0, 0, boxWidth[j], boxHeight[j]);
+	pop();	
 }
